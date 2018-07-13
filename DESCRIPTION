@@ -1,14 +1,15 @@
 Package: ASEtestTools
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Statistical testing toolbox for ASE data.
 Version: 0.1.0
 Author: Christina Sousa
 Maintainer: Christina Sousa <csousa@scripps.edu>
 Description: Statistical testing toolbox for ASE data.
     Implements ANEVA-DOT test. Please read Pejman Mohammadi's paper.
-Depends: R>=3.5.0
+Depends: 
 License: GPL-2
 Encoding: UTF-8
 URL: http://github.com/Catalysta/ASEtestTools
 BugReports: http://github.com/Catalysta/ASEtestTools/issues
 LazyData: true
+RoxygenNote: 6.0.1
