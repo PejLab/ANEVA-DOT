@@ -19,6 +19,7 @@
 #' @return A table containing the user-specified output columns, as well as unadjusted and
 #' Benjamini-Hoschberg adjusted p-values corresponding to the binomial test.
 #' @examples (tbd)
+#' @export
 ASEbinomial<-function(filepath, output_columns = c("refCount","altCount"), eh1 = "refCount",
                          eh2 = "altCount", prob = 0.5, FDR = 0.05, plot = TRUE){
   dat<-read.table(filepath, header = TRUE)
@@ -57,8 +58,9 @@ ASEbinomial<-function(filepath, output_columns = c("refCount","altCount"), eh1 =
 #' @param prob A numeric value between 0 and 1 which will be passed into the binomial test
 #' @param FDR A numeric value between 0 and 1 indicating the desired false discovery rate
 #' @examples (tbd)
+#' @export
 plot.ASEbinomial<-function(filepath, eh1 = "refCount", eh2 = "altCount", prob = 0.5, FDR = 0.05){
-  result<-ASE.binom.test(filepath = filepath, output_columns = c(eh1,eh2), prob = prob, FDR = FDR)
+  result<-ASEbinomial(filepath = filepath, output_columns = c(eh1,eh2), prob = prob, FDR = FDR, plot = FALSE)
   result[which(result[,eh1] == 0),eh1]<-.1
   result[which(result[,eh2] == 0),eh2]<-.1
   plot(result[,eh1], result[,eh2], log="xy", main = "Reference Count vs. Alternate Count",
