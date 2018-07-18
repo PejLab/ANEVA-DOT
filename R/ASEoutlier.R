@@ -16,12 +16,12 @@
 #' desired p-values
 #' @examples (tbd)
 
-dp.UndExp<-function(r, eh1, eh2, Vg){
+integrand.UndExp<-function(x, eh1, eh2, Vg){
   Hh<-max(eh1,eh2)
   Lh<-min(eh1,eh2)
-  k<-r/(1-r)
+  k<-x/(1-x)
   dt<-log2(k+1)-1
-  return(pnorm(dt,mean = 0, sd=sqrt(Vg))*dbeta(r,Lh+1,Hh+1))
+  pnorm(dt,mean = 0, sd=sqrt(Vg))*dbeta(x,Lh+1,Hh+1)
 }
 
 #' We next implement a helper function to generate the desired integrand
@@ -37,12 +37,12 @@ dp.UndExp<-function(r, eh1, eh2, Vg){
 #' desired p-values
 #' @examples (tbd)
 
-dp.OvrExp<-function(r, eh1, eh2, Vg){
+integrand.OvrExp<-function(x, eh1, eh2, Vg){
   Hh<-max(eh1,eh2)
   Lh<-min(eh1,eh2)
-  k<-r/(1-r)
+  k<-x/(1-x)
   dt<-1-log2(k+1)
-  return(pnorm(dt,mean = 0, sd=sqrt(Vg))*dbeta(r,Lh+1,Hh+1))
+  pnorm(dt,mean = 0, sd=sqrt(Vg))*dbeta(x,Lh+1,Hh+1)
 }
 
 
@@ -68,11 +68,21 @@ ASEoutlier<-function(filepath, output_columns = c("refCount","altCount"), r, eh1
   output<-dat[,output_columns]
   for (i in 1:nrow(dat)){
     if ((dat[i,eh1]+dat[i,eh2])>8){
-      output$p.val.LoE[i]<-2*integrate(dp.UndExp(r,dat[i,eh1],dat[i,eh2],Vg),0,1)
-      output$p.val.GoE[i]<-2*integrate(dp.OvrExp(r,dat[i,eh1],dat[i,eh2],Vg),0,1)
-      output$p.val.2sided[i]<-(0.5*output$p.val.LoE)+(0.5*output$p.val.GoE)
+      #output$p.val.LoE[i]<-2*integrate(dp.UndExp(r,dat[i,eh1],dat[i,eh2],Vg),0,1)
+      #output$p.val.GoE[i]<-2*integrate(dp.OvrExp(r,dat[i,eh1],dat[i,eh2],Vg),0,1)
+      #output$p.val.2sided[i]<-(0.5*output$p.val.LoE)+(0.5*output$p.val.GoE)
+      #integrand<-function(x){
+      #  pnorm(log2((x/(1-x))+1)-1,0,sqrt(Vg))*dbeta(x,min(dat[i,eh1],dat[i,eh2]),max(dat[i,eh1],dat[i,eh2]))
+      #  }
+      integrand<-function(x){pnorm(log2((x/(1-x))+1)-1,0,sqrt(Vg))*dbeta(x,min(dat[i,eh1],dat[i,eh2]),max(dat[i,eh1],dat[i,eh2]))}
+      integral.result<-integrate(integrand,0,1)
+      output$p.val.LoE[i]<-2*integral.result$value
     }
-    else{output$p.val[i]<-NA}
+    else{
+      output$p.val.LoE[i]<-NA
+      #output$p.val.GoE[i]<-NA
+      #output$p.val.2sided[i]<-NA
+      }
   }
   #Carry out Benjamini-Hochberg procedure to get adjusted p-values
   output$adj.pval<-p.adjust(output$p.val,method = "BH")
@@ -100,11 +110,11 @@ ASEoutlier<-function(filepath, output_columns = c("refCount","altCount"), r, eh1
 #' @param FDR A numeric value between 0 and 1 indicating the desired false discovery rate
 #' @examples (tbd)
 #' @export
-plot.ASEbinomial<-function(filepath, r, eh1 = "refCount", eh2 = "altCount", Vg, FDR = 0.05){
+plot.ASEoutlier<-function(filepath, r, eh1 = "refCount", eh2 = "altCount", Vg, FDR = 0.05){
   result<-ASEoutlier(filepath = filepath, output_columns = c(eh1,eh2), r=r, Vg = Vg, FDR = FDR, plot = FALSE)
   result[which(result[,eh1] == 0),eh1]<-.1
   result[which(result[,eh2] == 0),eh2]<-.1
-  plot(result[,eh1], result[,eh2], log="xy", main = "Reference Count vs. Alternate Count",
+  plot(result[,eh1], result[,eh2], log="xy", main = "Reference Count vs. Alternative Count",
        xlab = "Reference Count", ylab = "Alternative Count",
        col = ifelse(result$adj.pval<.10,'red','black'), pch = 19)
   abline(a = 0, b = 1, col = "blue")
