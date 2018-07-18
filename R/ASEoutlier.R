@@ -75,8 +75,8 @@ ASEoutlier<-function(filepath, output_columns = c("refCount","altCount"), r, eh1
       #  pnorm(log2((x/(1-x))+1)-1,0,sqrt(Vg))*dbeta(x,min(dat[i,eh1],dat[i,eh2]),max(dat[i,eh1],dat[i,eh2]))
       #  }
       integrand<-function(x){pnorm(log2((x/(1-x))+1)-1,0,sqrt(Vg))*dbeta(x,min(dat[i,eh1],dat[i,eh2]),max(dat[i,eh1],dat[i,eh2]))}
-      integral.result<-integrate(integrand,0,1)
-      output$p.val.LoE[i]<-2*integral.result$value
+      #integral.result<-integrate(integrand,0,1)
+      output$p.val.LoE[i]<-2*integrate(integrand,0,1)$value
     }
     else{
       output$p.val.LoE[i]<-NA
