@@ -41,7 +41,7 @@ ASEbinomial<-function(filepath, output_columns = c("refCount","altCount"), eh1 =
     plot(result[,eh1], result[,eh2], log="xy", #yaxt = "n", xaxt = "n",
          main = "Reference Count vs. Alternative Count",
          xlab = "Reference Count", ylab = "Alternative Count",
-         col = ifelse(result$adj.pval<.10,'red','black'), pch = 19)
+         col = ifelse(result$adj.pval<.05,'red','black'), pch = 19)
     abline(a = 0, b = 1, col = "blue")
   }
   return(output)
