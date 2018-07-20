@@ -1,14 +1,8 @@
-# This test is designed to detect if ASE shows sufficient imbalance to induce
-# an outlier in total gene expression. We first test under the assumption that
-# the mutation lies on haplotype 1, then test again assuming that the
-# mutation lies on haplotype 2. These results are averaged, resulting in an
-# effective two-sided test.
 
-
-#' We first implement a helper function to generate the desired integrand
+#' We implement a helper function to generate the desired integrand
 #' for the h1M test, that is, assuming that haplotype1 harbors the mutation.
 #'
-#' @param r Variable representing the true reference (haplotype 1) allele ratio
+#' @param r Variable representing the true allelic ratio of haplotype 1
 #' @param eh1 An integer value for count of expression of haplotype1
 #' @param eh2 An integer value for count of expression of haplotype2
 #' @param Vg A numeric value for the estimated dosage variance in normal population
@@ -18,15 +12,15 @@
 #' @examples (tbd)
 
 integrand.h1M<-function(r, eh1, eh2, Vg){
-  delta<-r/(1-r)
+  delta<-r/(1-r) #comment about delta, is effect size of mutation.... define r
   delta.E<-log2(delta+1)-1
-  (1-pnorm(abs(delta.E),mean = 0, sd=sqrt(Vg)))*dbeta(r,eh1+1,eh2+1)
+  exp((pnorm(abs(delta.E),mean = 0, sd=sqrt(Vg), lower.tail=FALSE, log.p = TRUE))+dbeta(r,eh1,eh2, log = TRUE))
 }
 
-#' We next implement a helper function to generate the desired integrand
+#' We implement a helper function to generate the desired integrand
 #' for the h2M test, that is, assuming haplotype 2 harbors the mutation.
 #'
-#' @param r Variable representing the true reference (haplotype 1) allele ratio
+#' @param r Variable representing the true allelic ratio of haplotype 1
 #' @param eh1 An integer value for count of expression of haplotype1
 #' @param eh2 An integer value for count of expression of haplotype2
 #' @param Vg A numeric value for the estimated dosage variance in normal population
@@ -38,12 +32,18 @@ integrand.h1M<-function(r, eh1, eh2, Vg){
 integrand.h2M<-function(r, eh1, eh2, Vg){
   delta<-(1-r)/r
   delta.E<-log2(delta+1)-1
-  (1-pnorm(abs(delta.E),mean = 0, sd=sqrt(Vg)))*dbeta(r,eh1+1,eh2+1)
+  exp((pnorm(abs(delta.E),mean = 0, sd=sqrt(Vg), lower.tail=FALSE, log.p = TRUE))+dbeta(r,eh1,eh2, log = TRUE))
 }
 
 
 #'
 #' Bayesian Change of Expression test on ASE count data.
+#'
+#' This test is designed to detect if ASE shows sufficient imbalance to induce
+#' an outlier in total gene expression. We first test under the assumption that
+#' the mutation lies on haplotype 1, then test again assuming that the
+#' mutation lies on haplotype 2. These results are averaged, resulting in an
+#' effective two-sided test.
 #'
 #' @param filepath_ASE A string with quotation marks around it indicating ASE count data filepath
 #' @param filepath_Vg A string with quotation marks around it indicating filepath for Variance estimates

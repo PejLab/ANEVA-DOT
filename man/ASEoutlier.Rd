@@ -4,33 +4,38 @@
 \alias{ASEoutlier}
 \title{Bayesian Change of Expression test on ASE count data.}
 \usage{
-ASEoutlier(filepath, output_columns = c("refCount", "altCount"), r,
-  eh1 = "refCount", eh2 = "altCount", Vg, FDR = 0.05, plot = TRUE)
+ASEoutlier(filepath, output_columns = c("refCount", "altCount"),
+  eh1 = "refCount", eh2 = "altCount", Vg = 0.00837743, FDR = 0.05,
+  plot = TRUE)
 }
 \arguments{
-\item{filepath}{A string with quotation marks around it indicating ASE data filepath}
-
-\item{r}{The ?true reference allele ratio?}
-
 \item{eh1}{A string with the column name of the reference count data}
 
 \item{eh2}{A string with the column name of the alternative count data}
 
-\item{Vg}{A numeric value for the estimated dosage variance in normal population}
+\item{Vg}{A string with the column name of the variances}
 
 \item{FDR}{A numeric value between 0 and 1 indicating the desired false discovery rate}
 
 \item{plot}{A logical T/F indicating whether plots should be generated for the test data}
+
+\item{filepath_ASE}{A string with quotation marks around it indicating ASE count data filepath}
+
+\item{filepath_Vg}{A string with quotation marks around it indicating filepath for Variance estimates}
 
 \item{output_columnns}{A vector containing strings of the exact column names to be duplicated
 from input file in the output}
 }
 \value{
 A table containing the user-specified output columns, as well as unadjusted and
-Benjamini-Hoschberg adjusted p-values for Loss, Gain, and change of expression
+Benjamini-Hoschberg adjusted p-values for h1M, h2M and total change of expression.
 }
 \description{
-Bayesian Change of Expression test on ASE count data.
+This test is designed to detect if ASE shows sufficient imbalance to induce
+an outlier in total gene expression. We first test under the assumption that
+the mutation lies on haplotype 1, then test again assuming that the
+mutation lies on haplotype 2. These results are averaged, resulting in an
+effective two-sided test.
 }
 \examples{
 (tbd)
