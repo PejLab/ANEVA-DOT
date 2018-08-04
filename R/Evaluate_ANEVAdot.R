@@ -15,7 +15,7 @@ dE = rnorm(simN,0,1)*Sg
 #  dE[i]<-max(-1,dE[i])
 #}
 #dE = max(rep(-1,length(dE), dE))
-dE[dE<-1]<--1
+dE[dE<(-1)]<-(-1)
 k  = 2^(dE+1)-1
 r_h1 = k/(k+1)
 #eh1  = rbinom(1,N, r_h1)
@@ -31,6 +31,3 @@ test.filepath<-"testdata.txt"
 
 ####add column titles manually####
 
-test.result<-ANEVAdot(filepath = test.filepath, output_columns = c("eh1","eh2"),eh1 = "eh1", eh2 = "eh2",Vg=Sg)
-
-qqplot(runif(1000),test.result$p.val)

@@ -16,7 +16,7 @@ integrand<-function(dE, eh1, eh2, Eg_std){
   Hh<-max(eh1,eh2)
   Lh<-min(eh1,eh2)
   Prob.dE<-dnorm(dE,0,Eg_std) #probability of observed dE in population
-  dE[dE<(-1)]<-(-1)#-1 is the minimum possible loss of expression in log2
+  dE<-max(-1,dE)#-1 is the minimum possible loss of expression in log2
   k<-2^(dE+1)-1 #regulatory effect size of the mutation
   r<-k/(k+1) #true allelic expression ratio of the mutated haplotype
   N<-Lh+Hh
@@ -51,7 +51,7 @@ integrand<-function(dE, eh1, eh2, Eg_std){
 #' @examples (tbd)
 #' @export
 ANEVAdot<-function(filepath, output_columns = c("refCount","altCount"), eh1 = "refCount",
-                     eh2 = "altCount", Eg_std, FDR = 0.05, plot = TRUE){
+                   eh2 = "altCount", Eg_std, FDR = 0.05, plot = TRUE){
   dat<-read.table(filepath, header = TRUE, sep = "\t")
   output<-dat[,output_columns]
   for (i in 1:nrow(dat)){
