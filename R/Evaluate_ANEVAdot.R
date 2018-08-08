@@ -31,3 +31,6 @@ test.filepath<-"testdata.txt"
 
 ####add column titles manually####
 
+test.result<-ANEVAdot(filepath = test.filepath, output_columns = c("eh1","eh2"),eh1 = "eh1", eh2 = "eh2",Eg_std=Sg)
+qqplot(runif(1000),test.result$p.val)
+
