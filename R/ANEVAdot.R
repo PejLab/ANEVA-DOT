@@ -10,7 +10,6 @@
 #' in normal population (can be derived from GTEx)
 #' @return The integrand over which we wish to integrate to get
 #' desired p-values
-#' @examples (tbd)
 
 integrand<-function(dE, eh1, eh2, Eg_std){
   Hh<-max(eh1,eh2)
@@ -56,13 +55,13 @@ ANEVAdot<-function(filepath, output_columns = c("refCount","altCount"), eh1 = "r
   output<-dat[,output_columns]
   for (i in 1:nrow(dat)){
     if (!is.finite(Eg_std[i])){
-      output$p.val[i]<-NA
+      output$p.val[i]<-1
       next
     }
     if (dat[i,eh1]==dat[i,eh2]){
-      output$p.val[i]<-1
+      output$p.val[i]<-NA
     }
-    else if ((dat[i,eh1]+dat[i,eh2])>0){
+    else if ((dat[i,eh1]+dat[i,eh2])>8){
       Hh<-max(dat[i,eh1],dat[i,eh2]) #higher expressed haplotype
       Lh<-min(dat[i,eh1],dat[i,eh2]) #lower expressed haplotype
       rad<-Eg_std[i]*4 #integration radius
