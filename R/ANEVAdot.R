@@ -48,7 +48,7 @@ integrand<-function(dE, eh1, eh2, Eg_std){
 #' Benjamini-Hoschberg adjusted p-values for detection of potential dosage outlier. P-values
 #' will not be generated for records with missing or infinite variances, or for those for
 #' which the total allelic count is less than 8.
-#' @examples (tbd)
+#' @examples result<-ANEVAdot("data/testdata.txt", output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
 #' @export
 ANEVAdot<-function(filepath, output_columns = c("refCount","altCount"), eh1 = "refCount",
                      eh2 = "altCount", Eg_std, FDR = 0.05, plot = TRUE){
