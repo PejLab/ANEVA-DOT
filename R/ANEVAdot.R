@@ -51,7 +51,7 @@ integrand<-function(dE, eh1, eh2, Eg_std){
 #' @export
 ANEVAdot<-function(filepath, output_columns = c("refCount","altCount"), eh1 = "refCount",
                      eh2 = "altCount", Eg_std, FDR = 0.05, plot = TRUE){
-  dat<-read.table(filepath, header = TRUE, sep = "\t")
+  dat<-read.csv(filepath, header = TRUE, sep = "\t")
   output<-dat[,output_columns]
   for (i in 1:nrow(dat)){
     if (!is.finite(Eg_std[i])){

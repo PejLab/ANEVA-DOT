@@ -25,12 +25,13 @@ for (i in 1:length(N)){
 }
 
 test.data<-cbind(eh1,N-eh1)
-test.data<-t(test.data)
-write(test.data, file = "testdata.txt",ncolumns = 2, sep = "\t")
+#test.data<-t(test.data)
+colnames(test.data) <- c("eh1", "eh2")
+write.table(as.data.frame(test.data), file = "testdata.txt", sep = "\t", row.names = FALSE)
 test.filepath<-"testdata.txt"
 
 ####add column titles manually####
 
-test.result<-ANEVAdot(filepath = test.filepath, output_columns = c("eh1","eh2"),eh1 = "eh1", eh2 = "eh2",Eg_std=Sg)
+test.result<-ANEVAdot(filepath = test.filepath, output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2",Eg_std=Sg)
 qqplot(runif(1000),test.result$p.val)
 

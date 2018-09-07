@@ -2,7 +2,7 @@ Package: ASEtestTools
 Type: Package
 Title: Statistical testing toolbox for ASE data.
 Version: 0.1.0
-Authors: Pejman Mohammadi, Christina Sousa
+Author: Pejman Mohammadi, Christina Sousa
 Maintainer: Christina Sousa <csousa@scripps.edu>
 Description: Statistical testing toolbox for ASE data.
     Implements ANEVA-DOT test. Please read Pejman Mohammadi's paper.
