@@ -55,11 +55,11 @@ ANEVAdot<-function(filepath, output_columns = c("refCount","altCount"), eh1 = "r
   output<-dat[,output_columns]
   for (i in 1:nrow(dat)){
     if (!is.finite(Eg_std[i])){
-      output$p.val[i]<-1
+      output$p.val[i]<-NA
       next
     }
     if (dat[i,eh1]==dat[i,eh2]){
-      output$p.val[i]<-NA
+      output$p.val[i]<-1
     }
     else if ((dat[i,eh1]+dat[i,eh2])>8){
       Hh<-max(dat[i,eh1],dat[i,eh2]) #higher expressed haplotype
