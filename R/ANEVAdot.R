@@ -34,7 +34,7 @@ integrand<-function(dE, eh1, eh2, Eg_std){
 #'
 #' @param filepath A string with quotation marks around it indicating ASE count data filepath.
 #' Data should be a raw, tab-delimited text file.
-#' @param output_columnns A vector containing strings of the exact column names to be duplicated
+#' @param output_columns A vector containing strings of the exact column names to be duplicated
 #' from input file in the output
 #' @param eh1 A string with the column name of the reference count data
 #' @param eh2 A string with the column name of the alternative count data

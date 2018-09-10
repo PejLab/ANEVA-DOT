@@ -1,6 +1,6 @@
 Package: ASEtestTools
 Type: Package
-Title: Statistical testing toolbox for ASE data.
+Title: Statistical testing toolbox for ASE data
 Version: 0.1.0
 Author: Pejman Mohammadi, Christina Sousa
 Maintainer: Christina Sousa <csousa@scripps.edu>
