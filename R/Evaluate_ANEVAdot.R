@@ -16,15 +16,21 @@ for (i in 1:length(N)){
 }
 
 test.data<-cbind(eh1,N-eh1)
-test.data<-t(test.data)
-write(test.data, file = "testdata.txt",ncolumns = 2, sep = "\t")
+#test.data<-t(test.data)
+colnames(test.data) <- c("eh1", "eh2")
+write.table(as.data.frame(test.data), file = "testdata.txt", sep = "\t", row.names = FALSE)
 test.filepath<-"testdata.txt"
 
 ####add column titles manually####
 
+<<<<<<< HEAD
 start_time <- Sys.time()
 test.result<-ANEVAdot(filepath = test.filepath, output_columns = c("eh1","eh2"),eh1 = "eh1", eh2 = "eh2",Eg_std=Sg)
 end_time <- Sys.time()
 runtime<-end_time - start_time
 qqplot(runif(10000),test.result$p.val)
+=======
+test.result<-ANEVAdot(filepath = test.filepath, output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2",Eg_std=Sg)
+qqplot(runif(1000),test.result$p.val)
+>>>>>>> e615cc169111775374b560ddc35e4c3f964d07b2
 
