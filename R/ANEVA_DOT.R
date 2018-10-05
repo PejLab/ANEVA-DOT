@@ -10,7 +10,8 @@
 #' @param eh2 A string with the column name of the alternative count data
 #' @param Eg_std a vector containing standard deviation in the log2 transformed total gene
 #' expression in a healthy population. Eg_std vector must be in one-to-one correspondence with
-#' ASE count data, and must be ordered correctly.
+#' ASE count data, and must be ordered correctly. Can be a vector in ASEdat if present. P-values
+#' will not be generated for records with missing or infinite variances.
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
 #' be to get the median ratio between eh1 and eh2 across the entire library. Can be a single
@@ -23,7 +24,7 @@
 #' @param coverage A numeric value such that if total allelic count is less than that value,
 #' p-values will not be generated for that record. Default value is 8.
 #' @param plot A logical T/F indicating whether plots should be generated for the test data
-#' @return A table containing the user-specified output columns, as well as unadjusted and
+#' @return A table containing the user-specified output_columns, as well as unadjusted and
 #' adjusted p-values for detection of potential dosage outlier. P-values are adjusted using
 #' Benjamini-Hoschberg method. P-values are not generated for records with missing or infinite
 #' variances.
@@ -48,7 +49,7 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
       output$p.val[i]<-Test_ASE_Outliers(Eg_std[i],ASEdat[i,eh1],ASEdat[i,eh2],r0[i],p0[i])
     }
     else{
-      output$p.val[i]<-NA
+      output$p.val[i]<-NA #due to inadequate coverage
     }
   }
   #Carry out Benjamini-Hochberg procedure to get adjusted p-values
@@ -69,20 +70,20 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
 
 #' @param Eg_std Standard deviation in the log2 transformed total gene expression in a healthy
 #' population.
-#' @param eh1 An integer count of expression of haplotype 1.
-#' @param eh2 An integer count of expression of haplotype 2.
+#' @param eh1 Integer value for of expression of haplotype 1.
+#' @param eh2 Integer value of expression of haplotype 2.
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
 #' be to get the median ratio between eh1 and eh2 across the entire library.
 #' @param p0 An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
 #' due to noise when it is essentially not there. (For v7: LAMP = 0.0003).
-#' @return Undajusted 2-sided p-value. H0:There does not exist a significantly abnormal allelic
-#' imbalance for this SNP, vs. H1: Allelic ratio significantly deviates from normal population.
+#' @return Undajusted 2-sided p-value, testing whether: H0:There does not exist a significantly
+#' abnormal allelic imbalance for this SNP, vs. H1: Allelic ratio significantly deviates from
+#' normal population.
 Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
   if (eh1==eh2){
     p.val<-1
   }
-
   Eg_std<-max(Eg_std,2^(-52)) #this variance is already zero when compared to binomial variance.
   rad<-Eg_std*4 #integration radius
   log_BinCoeff<-log_BinCoeffs(eh1+eh2) #pre-calculate binomial coefficients to avoid redoing them within the integral
@@ -90,14 +91,13 @@ Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
 }
 
 
-#' We implement a helper function to generate the desired integrand
-#' for the test.
+#' Function generates the required integrand for the test.
 #'
 #' @param dE Variable representing the true change in gene dosage
 #' (variable of integration)
-#' @param eh1 An integer value for count of expression of haplotype1
-#' @param eh2 An integer value for count of expression of haplotype2
-#' @param Eg_std A numeric value for the estimated dosage standard deviation
+#' @param eh1 Integer value for count of expression of haplotype1
+#' @param eh2 Integer value for count of expression of haplotype2
+#' @param Eg_std Numeric value for the estimated dosage standard deviation
 #' in normal population (can be derived from GTEx)
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
@@ -111,7 +111,7 @@ Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
 integrand<-function(dE, eh1, eh2, Eg_std, r0, p0, log_BinCoeff){
   N<-eh1+eh2
   Prob.dE<-dnorm(dE,0,Eg_std) #probability of observed dE in population
-  dE[dE<(-1)]<-(-1) #-1 is the minimum possible loss of expression in log2
+  dE[dE<log(.5)]<-(log(.5)) #-1 is the minimum possible loss of expression in log2
   kr<-2*exp(dE)-1 #regulatory effect size of the mutation
   rr<-kr/(kr+1) #allelic ratio of the mutated haplotype
   rn<-rr+p0*(1-2*rr) #allelic ratio of the mutated haplotype after accounting for noise
@@ -123,10 +123,12 @@ integrand<-function(dE, eh1, eh2, Eg_std, r0, p0, log_BinCoeff){
   r_mR<-k/(k+1) #reference allelic expression ratio (ASE Ref hap)
 
   k<-k0/kn #total expected aFC of R hap. to A hap. after accounting for bias
-  r_mA<-k/(k+1) #reference allelic expression ratio (ASE Ref hap)
-  r_mA[is.nan(r_mA)]<-1
-  dpval<-Binom_test_ctm_dbl(eh1,N,r_mR,r_mA,log_BinCoeff,r0)*Prob.dE
-  return(dpval)
+  r_mA<-k/(k+1)
+  #if(k==Inf){r_mA<-1}
+  r_mA[k==Inf]<-1
+  #r_mA(k0==0 && kn==0)=0.5
+
+  return(Binom_test_ctm_dbl(eh1,N,r_mR,r_mA,log_BinCoeff,r0)*Prob.dE)
 }
 
 #For the following test we assume X and N are scalars while p is a vector
