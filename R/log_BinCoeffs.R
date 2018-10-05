@@ -5,7 +5,7 @@
 #' designed by Pejman Mohammadi, 2018, Scripps Research, San Diego, CA.
 #'
 #' @param n The desired n for which coefficients will be calculated
-#' @return log_z The log scale Binomial coefficients
+#' @return log_z Vector of log scale Binomial coefficients
 
 log_BinCoeffs<-function(n){
   log_z<-numeric(n+1) #note first and last element will remain 0
@@ -14,7 +14,7 @@ log_BinCoeffs<-function(n){
 
   m1<-floor(n/2) #this is the middle. binom coeffs symmetric so we calculate only half
   m2<-ceiling(n/2) #this is the "other" middle
-  x<- c(1:m1)
+  x<- 1:m1
   xc<- n-x
   log_z[2:(m1+1)]<- (lgamm[n+1]-lgamm[x+1]-lgamm[xc+1])
 
