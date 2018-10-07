@@ -31,7 +31,8 @@
 #@examples result<-ANEVAdot("data/testdata.txt", output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
 #' @export
 ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
-                   eh2 = "altCount", Eg_std, r0 = 0.5, p0, FDR = 0.05, coverage = 8, plot = TRUE){
+                   eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.0003, FDR = 0.05,
+                   coverage = 8, plot = TRUE){
   output<-ASEdat[,output_columns]
   #insert user warning about r0 and p0 defaults
   if (length(r0)==1){
@@ -54,6 +55,8 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
   }
   #Carry out Benjamini-Hochberg procedure to get adjusted p-values
   output$adj.pval<-p.adjust(output$p.val,method = "BH")
+
+  #Carry out plotting if called for
   if (plot==TRUE){
     result<-output
     result[which(result[,eh1] == 0),eh1]<-.1
@@ -124,9 +127,8 @@ integrand<-function(dE, eh1, eh2, Eg_std, r0, p0, log_BinCoeff){
 
   k<-k0/kn #total expected aFC of R hap. to A hap. after accounting for bias
   r_mA<-k/(k+1)
-  #if(k==Inf){r_mA<-1}
-  r_mA[k==Inf]<-1
-  #r_mA(k0==0 && kn==0)=0.5
+  ifelse(k==Inf,r_mA<-1,r_mA<-(k/(k+1)))
+  ifelse(k0==0 && kn==0,r_mA<-0.5,r_mA<-(k/(k+1)))
 
   return(Binom_test_ctm_dbl(eh1,N,r_mR,r_mA,log_BinCoeff,r0)*Prob.dE)
 }
