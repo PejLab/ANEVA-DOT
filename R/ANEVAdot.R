@@ -58,11 +58,7 @@ ANEVAdot<-function(filepath, output_columns = c("refCount","altCount"), eh1 = "r
       output$p.val[i]<-NA
       next
     }
-<<<<<<< HEAD
     if (dat[i,eh1]==dat[i,eh2] & (dat[i,eh1]+dat[i,eh2])>10){
-=======
-    if (dat[i,eh1]==dat[i,eh2]){
->>>>>>> upstream/master
       output$p.val[i]<-1
     }
     else if ((dat[i,eh1]+dat[i,eh2])>10){
