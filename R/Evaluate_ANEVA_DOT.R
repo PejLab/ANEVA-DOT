@@ -1,7 +1,7 @@
 #In this script, we produce simulated data and verify that the ANEVAdot test is calibrated properly
 
 #Generate simulated data
-simN  = 10000
+simN  = 1000
 Sg = runif(simN)*.25
 N  = round(10^(3 + rnorm(simN,0,1)*.25)) #total count in binomial
 N[N>1e4]<-1e4 #cap at 1e4
@@ -18,19 +18,15 @@ for (i in 1:length(N)){
 test.data<-cbind(eh1,N-eh1)
 #test.data<-t(test.data)
 colnames(test.data) <- c("eh1", "eh2")
-write.table(as.data.frame(test.data), file = "testdata.txt", sep = "\t", row.names = FALSE)
-test.filepath<-"testdata.txt"
+test.data<-as.data.frame(test.data)
 
-####add column titles manually####
-
-<<<<<<< HEAD
 start_time <- Sys.time()
-test.result<-ANEVAdot(filepath = test.filepath, output_columns = c("eh1","eh2"),eh1 = "eh1", eh2 = "eh2",Eg_std=Sg)
+test.result<-ANEVA_DOT(test.data, output_columns = c("eh1","eh2"),
+                       eh1 = "eh1", eh2 = "eh2",Eg_std=Sg)
 end_time <- Sys.time()
-runtime<-end_time - start_time
-qqplot(runif(10000),test.result$p.val)
-=======
-test.result<-ANEVAdot(filepath = test.filepath, output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2",Eg_std=Sg)
+runtime<-end_time - start_time #Time difference of 24.45896 secs
 qqplot(runif(1000),test.result$p.val)
->>>>>>> e615cc169111775374b560ddc35e4c3f964d07b2
+abline(a = 0, b = 1, col = "blue")
+
+
 
