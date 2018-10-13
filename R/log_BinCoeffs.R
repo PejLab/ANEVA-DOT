@@ -10,7 +10,7 @@
 log_BinCoeffs<-function(n){
   log_z<-numeric(n+1) #note first and last element will remain 0
 
-  lgamm<-lgamma(0:n+1) #precalculate gamma function
+  lgamm<-lgamma(1:(n+1)) #precalculate gamma function
 
   m1<-floor(n/2) #this is the middle. binom coeffs symmetric so we calculate only half
   m2<-ceiling(n/2) #this is the "other" middle
