@@ -148,7 +148,7 @@ Binom_test_ctm_dbl<-function(X,N,p1,p2,log_BinCoeff,r0){
 
       tpl<-sum(Bnp[1:(X+1)])
       tpr<-sum(Bnp[(X+1):(N+1)])
-      p.val[i]<-2*min(tpl,tpr)
+      p.val[i]<-2*min(tpl,tpr,0.5)
     }
   }
   return(p.val)
