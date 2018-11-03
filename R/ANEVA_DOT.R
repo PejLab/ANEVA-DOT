@@ -31,7 +31,7 @@
 #@examples result<-ANEVAdot("data/testdata.txt", output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
 #' @export
 ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
-                   eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.0003, FDR = 0.05,
+                   eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.000326, FDR = 0.05,
                    coverage = 8, plot = TRUE){
   output<-ASEdat[,output_columns]
   #insert user warning about r0 and p0 defaults
@@ -84,13 +84,16 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
 #' abnormal allelic imbalance for this SNP, vs. H1: Allelic ratio significantly deviates from
 #' normal population.
 Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
+  Eg_std<-max(Eg_std,10^(-6)) #this variance is already zero when compared to binomial variance.
+  rad<-Eg_std*4 #integration radius
+  log_BinCoeff<-log_BinCoeffs(eh1+eh2) #pre-calculate binomial coefficients to avoid redoing them within the integral
   if (eh1==eh2){
     p.val<-1
   }
-  Eg_std<-max(Eg_std,2^(-52)) #this variance is already zero when compared to binomial variance.
-  rad<-Eg_std*4 #integration radius
-  log_BinCoeff<-log_BinCoeffs(eh1+eh2) #pre-calculate binomial coefficients to avoid redoing them within the integral
+  else{
   p.val<-integrate(integrand,-rad,rad,eh1,eh2, Eg_std, r0, p0, log_BinCoeff, abs.tol = 0, rel.tol = 1e-4)$value
+  }
+  return(p.val)
 }
 
 
@@ -126,9 +129,8 @@ integrand<-function(dE, eh1, eh2, Eg_std, r0, p0, log_BinCoeff){
   r_mR<-k/(k+1) #reference allelic expression ratio (ASE Ref hap)
 
   k<-k0/kn #total expected aFC of R hap. to A hap. after accounting for bias
-  r_mA<-k/(k+1)
-  ifelse(k==Inf,r_mA<-1,r_mA<-(k/(k+1)))
-  ifelse(k0==0 && kn==0,r_mA<-0.5,r_mA<-(k/(k+1)))
+  r_mA<-ifelse(k==Inf,r_mA<-1,r_mA<-(k/(k+1)))
+  #ifelse((k0==0 && kn==0),r_mA<-0.5,r_mA<-(k/(k+1))) #this line not returning properly
 
   return(Binom_test_ctm_dbl(eh1,N,r_mR,r_mA,log_BinCoeff,r0)*Prob.dE)
 }
@@ -145,8 +147,8 @@ Binom_test_ctm_dbl<-function(X,N,p1,p2,log_BinCoeff,r0){
       Bnp1<-pdf_Binom_fast(N,p1[i],log_BinCoeff)
       Bnp2<-pdf_Binom_fast(N,p2[i],log_BinCoeff)
       Bnp<-(Bnp1+Bnp2)/2
-
-      tpl<-sum(Bnp[1:(X+1)])
+      #Bnp  = Bnp/sum(Bnp) #Just to get rid of potential numerical issues
+      tpl<-sum(Bnp[1:X+1])
       tpr<-sum(Bnp[(X+1):(N+1)])
       p.val[i]<-2*min(tpl,tpr,0.5)
     }
