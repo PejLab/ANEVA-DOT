@@ -2,6 +2,7 @@
 #' Binomial coefficients to it. It is useful when it is recalculated on
 #' the same N, over and over again.
 #' log_BinCoeffs can be precalculated using the function log_BinCoeffs(n)
+#' NEED TO INSERT WARNING IF p OUT OF DOMAIN [0,1]
 #'
 #' @param n The desired n for which the pdf will be calculated
 #' @param p The Binomial parameter probability of success

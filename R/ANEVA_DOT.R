@@ -28,7 +28,7 @@
 #' adjusted p-values for detection of potential dosage outlier. P-values are adjusted using
 #' Benjamini-Hoschberg method. P-values are not generated for records with missing or infinite
 #' variances.
-#@examples result<-ANEVAdot("data/testdata.txt", output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
+#' @examples result<-ANEVA_DOT(testdata, output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
 #' @export
 ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
                    eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.000326, FDR = 0.05,
@@ -54,6 +54,7 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
     }
   }
   #Carry out Benjamini-Hochberg procedure to get adjusted p-values
+  #(CHECK TO BE SURE THIS DOES NOT INCLUDE THE NA's)
   output$adj.pval<-p.adjust(output$p.val,method = "BH")
 
   #Carry out plotting if called for
@@ -71,6 +72,10 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
 }
 
 
+#' Test ASE Outliers
+#'
+#' This is a black box function which performs the statistical test on a single SNP.
+#'
 #' @param Eg_std Standard deviation in the log2 transformed total gene expression in a healthy
 #' population.
 #' @param eh1 Integer value for of expression of haplotype 1.
@@ -84,7 +89,7 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
 #' abnormal allelic imbalance for this SNP, vs. H1: Allelic ratio significantly deviates from
 #' normal population.
 Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
-  Eg_std<-max(Eg_std,10^(-6)) #this variance is already zero when compared to binomial variance.
+  Eg_std<-max(Eg_std,(.Machine$double.eps)) #this variance is already zero when compared to binomial variance.
   rad<-Eg_std*4 #integration radius
   log_BinCoeff<-log_BinCoeffs(eh1+eh2) #pre-calculate binomial coefficients to avoid redoing them within the integral
   if (eh1==eh2){
@@ -147,10 +152,11 @@ Binom_test_ctm_dbl<-function(X,N,p1,p2,log_BinCoeff,r0){
       Bnp1<-pdf_Binom_fast(N,p1[i],log_BinCoeff)
       Bnp2<-pdf_Binom_fast(N,p2[i],log_BinCoeff)
       Bnp<-(Bnp1+Bnp2)/2
-      #Bnp  = Bnp/sum(Bnp) #Just to get rid of potential numerical issues
-      tpl<-sum(Bnp[1:X+1])
-      tpr<-sum(Bnp[(X+1):(N+1)])
-      p.val[i]<-2*min(tpl,tpr,0.5)
+      Bnp  = Bnp/sum(Bnp) #Just to get rid of potential numerical issues
+      tpl<-sum(Bnp[0:X])
+      tpr<-ifelse(X==N,tpr<-0,tpr<-sum(Bnp[(X+2):(N+1)])) #to properly handly right tail indices
+      p.val[i]<-2*min(tpl,tpr)
+      p.val[i]<-p.val[i]+Bnp[X+1]
     }
   }
   return(p.val)
@@ -167,12 +173,12 @@ Binom_test_ctm_dbl<-function(X,N,p1,p2,log_BinCoeff,r0){
 #' @param FDR A numeric value between 0 and 1 indicating the desired false discovery rate
 #' @examples (tbd)
 #' @export
-plot.ANEVAdot<-function(filepath, eh1 = "refCount", eh2 = "altCount", Eg_std, FDR = 0.05){
-  result<-ANEVAdot(filepath = filepath, output_columns = c(eh1,eh2), Eg_std = Eg_std, FDR = FDR, plot = FALSE)
-  result[which(result[,eh1] == 0),eh1]<-.1
-  result[which(result[,eh2] == 0),eh2]<-.1
-  plot(result[,eh1], result[,eh2], log="xy", main = "Reference Count vs. Alternative Count",
-       xlab = "Reference Count", ylab = "Alternative Count",
-       col = ifelse(result$adj.pval<.10,'red','black'), pch = 19)
-  abline(a = 0, b = 1, col = "blue")
-}
+#plot.ANEVAdot<-function(filepath, eh1 = "refCount", eh2 = "altCount", Eg_std, FDR = 0.05){
+#  result<-ANEVAdot(filepath = filepath, output_columns = c(eh1,eh2), Eg_std = Eg_std, FDR = FDR, plot = FALSE)
+#  result[which(result[,eh1] == 0),eh1]<-.1
+#  result[which(result[,eh2] == 0),eh2]<-.1
+#  plot(result[,eh1], result[,eh2], log="xy", main = "Reference Count vs. Alternative Count",
+#       xlab = "Reference Count", ylab = "Alternative Count",
+#       col = ifelse(result$adj.pval<.10,'red','black'), pch = 19)
+#  abline(a = 0, b = 1, col = "blue")
+#}
