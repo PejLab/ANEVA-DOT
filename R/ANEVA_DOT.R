@@ -8,10 +8,10 @@
 #' wishes to duplicate in the output.
 #' @param eh1 A string with the column name of the reference count data
 #' @param eh2 A string with the column name of the alternative count data
-#' @param Eg_std a vector containing standard deviation in the log2 transformed total gene
-#' expression in a healthy population. Eg_std vector must be in one-to-one correspondence with
-#' ASE count data, and must be ordered correctly. Can be a vector in ASEdat if present. P-values
-#' will not be generated for records with missing or infinite variances.
+#' @param Eg_std a vector containing standard deviation in the total gene expression in a healthy
+#' population. Eg_std vector must be in one-to-one correspondence with ASE count data, and must be
+#' ordered correctly. Can be a vector in ASEdat if present. P-values will not be generated for
+#' records with missing or infinite variances.
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
 #' be to get the median ratio between eh1 and eh2 across the entire library. Can be a single
@@ -32,7 +32,7 @@
 #' @export
 ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
                    eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.000326, FDR = 0.05,
-                   coverage = 8, plot = TRUE){
+                   coverage = 10, plot = TRUE){
   output<-ASEdat[,output_columns]
   #insert user warning about r0 and p0 defaults
   if (length(r0)==1){
@@ -46,7 +46,7 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
       output$p.val[i]<-NA
       next
     }
-    else if ((ASEdat[i,eh1]+ASEdat[i,eh2])>coverage){
+    else if ((ASEdat[i,eh1]+ASEdat[i,eh2])>=coverage){
       output$p.val[i]<-Test_ASE_Outliers(Eg_std[i],ASEdat[i,eh1],ASEdat[i,eh2],r0[i],p0[i])
     }
     else{
