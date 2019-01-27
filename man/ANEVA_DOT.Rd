@@ -6,7 +6,7 @@
 \usage{
 ANEVA_DOT(ASEdat, output_columns = c("refCount", "altCount"),
   eh1 = "refCount", eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.000326,
-  FDR = 0.05, coverage = 8, plot = TRUE)
+  FDR = 0.05, coverage = 10, plot = TRUE)
 }
 \arguments{
 \item{ASEdat}{Dataframe containing reference and alternative count data.}
@@ -18,10 +18,10 @@ wishes to duplicate in the output.}
 
 \item{eh2}{A string with the column name of the alternative count data}
 
-\item{Eg_std}{a vector containing standard deviation in the log2 transformed total gene
-expression in a healthy population. Eg_std vector must be in one-to-one correspondence with
-ASE count data, and must be ordered correctly. Can be a vector in ASEdat if present. P-values
-will not be generated for records with missing or infinite variances.}
+\item{Eg_std}{a vector containing standard deviation in the total gene expression in a healthy
+population. Eg_std vector must be in one-to-one correspondence with ASE count data, and must be
+ordered correctly. Can be a vector in ASEdat if present. P-values will not be generated for
+records with missing or infinite variances.}
 
 \item{r0}{The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 difference (reference bias due to alignment). The simplest way to get such an estimate would
@@ -36,7 +36,7 @@ value across entire library, or a SNP-wise vector.}
 Default FDR is 0.05.}
 
 \item{coverage}{A numeric value such that if total allelic count is less than that value,
-p-values will not be generated for that record. Default value is 8.}
+p-values will not be generated for that record. Default value is 10.}
 
 \item{plot}{A logical T/F indicating whether plots should be generated for the test data}
 }

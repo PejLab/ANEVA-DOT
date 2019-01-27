@@ -7,8 +7,7 @@
 Test_ASE_Outliers(Eg_std, eh1, eh2, r0, p0)
 }
 \arguments{
-\item{Eg_std}{Standard deviation in the log2 transformed total gene expression in a healthy
-population.}
+\item{Eg_std}{Standard deviation in the total gene expression in a healthy population.}
 
 \item{eh1}{Integer value for of expression of haplotype 1.}
 
