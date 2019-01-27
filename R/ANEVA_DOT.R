@@ -22,7 +22,7 @@
 #' @param FDR A numeric value between 0 and 1 indicating the desired false discovery rate.
 #' Default FDR is 0.05.
 #' @param coverage A numeric value such that if total allelic count is less than that value,
-#' p-values will not be generated for that record. Default value is 8.
+#' p-values will not be generated for that record. Default value is 10.
 #' @param plot A logical T/F indicating whether plots should be generated for the test data
 #' @return A table containing the user-specified output_columns, as well as unadjusted and
 #' adjusted p-values for detection of potential dosage outlier. P-values are adjusted using
@@ -34,6 +34,12 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
                    eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.000326, FDR = 0.05,
                    coverage = 10, plot = TRUE){
   output<-ASEdat[,output_columns]
+  #get null r0 if none provided
+  #if (is.null(r0)){
+  #  totalCount<-ASEdat[,eh1]+ASEdat[,eh2]
+  #  indices<-which(totalCount>=quantile(totalCount,.8,na.rm=TRUE))
+  #  r0<-median(ASEdat[indices,eh1]/totalCount[indices])
+  #}
   #insert user warning about r0 and p0 defaults
   if (length(r0)==1){
     r0<-rep(r0,nrow(ASEdat))
@@ -67,6 +73,8 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
          xlab = "Reference Count", ylab = "Alternative Count",
          col = ifelse(result$adj.pval<.05,'red','black'), pch = 19)
     abline(a = 0, b = 1, col = "blue")
+    #abline(a = c(0,0), b = c(1,(1-r0)/r0), col = c("blue","red"))
+    #abline(b=((1-r0)/r0))
   }
   return(output)
 }
@@ -76,8 +84,7 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
 #'
 #' This is a black box function which performs the statistical test on a single SNP.
 #'
-#' @param Eg_std Standard deviation in the log2 transformed total gene expression in a healthy
-#' population.
+#' @param Eg_std Standard deviation in the total gene expression in a healthy population.
 #' @param eh1 Integer value for of expression of haplotype 1.
 #' @param eh2 Integer value of expression of haplotype 2.
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
