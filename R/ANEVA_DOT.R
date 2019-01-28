@@ -14,8 +14,9 @@
 #' records with missing or infinite variances.
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
-#' be to get the median ratio between eh1 and eh2 across the entire library. Can be a single
-#' value across entire library, or a SNP-wise vector.
+#' be to get the median ratio between eh1 and eh2 across the entire library. This is done
+#' automatically if no user-specified r0 value is detected. Can be a single value across entire
+#' library, or a SNP-wise vector.
 #' @param p0 An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
 #' due to noise when it is essentially not there. (For v7: LAMP = 0.0003) Can be a single
 #' value across entire library, or a SNP-wise vector.
@@ -28,25 +29,31 @@
 #' adjusted p-values for detection of potential dosage outlier. P-values are adjusted using
 #' Benjamini-Hoschberg method. P-values are not generated for records with missing or infinite
 #' variances.
-#' @examples result<-ANEVA_DOT(testdata, output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
+#' @examples
+#' testdata <- readRDS("data/testdata.rds")
+#' result<-ANEVA_DOT(testdata, output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
 #' @export
 ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
-                   eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.000326, FDR = 0.05,
+                   eh2 = "altCount", Eg_std, r0 = NULL, p0 = NULL, FDR = 0.05,
                    coverage = 10, plot = TRUE){
   output<-ASEdat[,output_columns]
-  #get null r0 if none provided
-  #if (is.null(r0)){
-  #  totalCount<-ASEdat[,eh1]+ASEdat[,eh2]
-  #  indices<-which(totalCount>=quantile(totalCount,.8,na.rm=TRUE))
-  #  r0<-median(ASEdat[indices,eh1]/totalCount[indices])
-  #}
-  #insert user warning about r0 and p0 defaults
+  if (is.null(r0)){
+    r0<-get_r0(ASEdat, eh1, eh2)
+    warning(paste("There was no r0 provided, I estimate it to be",r0))
+  }
+  if (is.null(p0)){
+    p0<-0.000326
+    warning(paste("There was no p0 provided, I estimate it to be",p0,"(obtained from GTEx v7 data)."))
+  }
   if (length(r0)==1){
     r0<-rep(r0,nrow(ASEdat))
   }
   if (length(p0)==1){
     p0<-rep(p0,nrow(ASEdat))
   }
+  #create progress bar
+  pb <- txtProgressBar(min = 0, max = nrow(ASEdat), style = 3)
+  #get p-values
   for (i in 1:nrow(ASEdat)){
     if (!is.finite(Eg_std[i])){
       output$p.val[i]<-NA
@@ -58,7 +65,13 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
     else{
       output$p.val[i]<-NA #due to inadequate coverage
     }
+    # update progress bar
+    if(i %% 20){
+      #Sys.sleep(0.001)
+      setTxtProgressBar(pb, i)
+    }
   }
+  close(pb)
   #Carry out Benjamini-Hochberg procedure to get adjusted p-values
   #(CHECK TO BE SURE THIS DOES NOT INCLUDE THE NA's)
   output$adj.pval<-p.adjust(output$p.val,method = "BH")
@@ -73,8 +86,7 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
          xlab = "Reference Count", ylab = "Alternative Count",
          col = ifelse(result$adj.pval<.05,'red','black'), pch = 19)
     abline(a = 0, b = 1, col = "blue")
-    #abline(a = c(0,0), b = c(1,(1-r0)/r0), col = c("blue","red"))
-    #abline(b=((1-r0)/r0))
+    #abline(a = c(0,0), b = c(1,(1-r0)/r0), col = c("blue","red")) #not implemented currently
   }
   return(output)
 }
@@ -168,24 +180,3 @@ Binom_test_ctm_dbl<-function(X,N,p1,p2,log_BinCoeff,r0){
   }
   return(p.val)
 }
-
-#' #################################################################################################
-#' Generate plot of ASE data showing significant outliers. (This Function not currently implemented)
-#'
-#' @param filepath A string with quotation marks around it indicating ASE data filepath
-#' @param eh1 A string with the column name of the reference count data
-#' @param eh2 A string with the column name of the alternative count data
-#' @param Eg_std a vector with variance estimates for dosage distributions associated with count data.
-#' Eg_std must be in one-to-one correspondence with ASE data, and ordered correctly.
-#' @param FDR A numeric value between 0 and 1 indicating the desired false discovery rate
-#' @examples (tbd)
-#' @export
-#plot.ANEVAdot<-function(filepath, eh1 = "refCount", eh2 = "altCount", Eg_std, FDR = 0.05){
-#  result<-ANEVAdot(filepath = filepath, output_columns = c(eh1,eh2), Eg_std = Eg_std, FDR = FDR, plot = FALSE)
-#  result[which(result[,eh1] == 0),eh1]<-.1
-#  result[which(result[,eh2] == 0),eh2]<-.1
-#  plot(result[,eh1], result[,eh2], log="xy", main = "Reference Count vs. Alternative Count",
-#       xlab = "Reference Count", ylab = "Alternative Count",
-#       col = ifelse(result$adj.pval<.10,'red','black'), pch = 19)
-#  abline(a = 0, b = 1, col = "blue")
-#}
