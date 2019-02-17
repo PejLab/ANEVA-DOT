@@ -8,7 +8,7 @@
 #' @param eh1 A string with the column name of the reference count data
 #' @param eh2 A string with the column name of the alternative count data
 #' @return A numeric estimate of the reference bias r0 for the given library.
-#' @examples r0<-get_r0(testdata, eh1 = "eh1", eh2 = "eh2")
+#' @examples
 #' @export
 
 get_r0<-function(ASEdat, eh1 = "refCount", eh2 = "altCount"){

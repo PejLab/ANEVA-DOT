@@ -30,8 +30,6 @@
 #' Benjamini-Hoschberg method. P-values are not generated for records with missing or infinite
 #' variances.
 #' @examples
-#' testdata <- readRDS("data/testdata.rds")
-#' result<-ANEVA_DOT(testdata, output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
 #' @export
 ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
                    eh2 = "altCount", Eg_std, r0 = NULL, p0 = NULL, FDR = 0.05,
@@ -134,7 +132,7 @@ Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
 #' be to get the median ratio between eh1 and eh2 across the entire library.
 #' @param p0 An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
 #' due to noise when it is essentially not there. (For v7: LAMP = 0.0003).
-#' @param log_BinCoeffs a vector of log transformed binomial coefficients 0:N=eh1+eh2.
+#' @param log_BinCoeff a vector of log transformed binomial coefficients 0:N=eh1+eh2.
 #' @return The integrand over which we wish to integrate to get
 #' desired p-values
 

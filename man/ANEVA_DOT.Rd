@@ -5,7 +5,7 @@
 \title{ANEVA Dosage Outlier Test}
 \usage{
 ANEVA_DOT(ASEdat, output_columns = c("refCount", "altCount"),
-  eh1 = "refCount", eh2 = "altCount", Eg_std, r0 = 0.5, p0 = 0.000326,
+  eh1 = "refCount", eh2 = "altCount", Eg_std, r0 = NULL, p0 = NULL,
   FDR = 0.05, coverage = 10, plot = TRUE)
 }
 \arguments{
@@ -25,8 +25,9 @@ records with missing or infinite variances.}
 
 \item{r0}{The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 difference (reference bias due to alignment). The simplest way to get such an estimate would
-be to get the median ratio between eh1 and eh2 across the entire library. Can be a single
-value across entire library, or a SNP-wise vector.}
+be to get the median ratio between eh1 and eh2 across the entire library. This is done
+automatically if no user-specified r0 value is detected. Can be a single value across entire
+library, or a SNP-wise vector.}
 
 \item{p0}{An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
 due to noise when it is essentially not there. (For v7: LAMP = 0.0003) Can be a single
@@ -50,6 +51,4 @@ variances.
 This test is designed to detect if ASE data reveals sufficient allelic imbalance to induce
 an outlier in total gene expression.
 }
-\examples{
-result<-ANEVA_DOT(testdata, output_columns = c("eh1","eh2"), eh1 = "eh1", eh2 = "eh2", Eg_std=Sg)
-}
+\examples{}
