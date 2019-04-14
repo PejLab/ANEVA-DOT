@@ -65,3 +65,20 @@
 #' }
 #' @source \url{https://gtexportal.org/home/}
 "Vg_GTEx_v7"
+
+#'Sample ASE data
+#'
+#'A sample of Allele Specific Expression (ASE) data from a single tissue sample from a GTEx v7 donor
+#'for use with the short tutorial on the package README.
+#'The data was produced using phASEr \url{https://github.com/secastel/phaser}
+#'
+#'@format A data frame with 5460 rows and 6 variables:
+#'\describe{
+#'  \item{GENE_ID}{The Ensembl Gene ID}
+#'  \item{TISSUE_ID}{The tissue ID from GTEx. (Skeletal Muscle in this case)}
+#'  \item{REF_COUNT}{The number of RNA-seq reads from the highest expressed ASE-snp mapping to the reference allele of the gene}
+#'  \item{ALT_COUNT}{The number of RNA-seq reads from the highest expressed ASE-snp mapping to the alternative allele of the gene}
+#'  \item{TOTAL_COUNT}{The sum of REF_COUNT and ALT_COUNT}
+#'  \item{NULL_RATIO}{From phASEr, the expected value of ALT_COUNT/(ALT_COUNT + REF_COUNT)}
+#'}
+"sample_ASE"

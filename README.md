@@ -13,7 +13,7 @@ library(ANEVADOT)
 # Define the output columns
 output_columns <- c("GENE_ID", "TISSUE_ID",  "REF_COUNT", "ALT_COUNT", "TOTAL_COUNT", "NULL_RATIO")
 
-#sample_ASE <- as.data.frame(my_input %>% select(output_columns))
+# Load the Sample ASE data
 load("data/sample_ASE_data.rda")
 
 # re organize the tables by:
