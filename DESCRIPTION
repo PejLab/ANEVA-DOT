@@ -11,9 +11,11 @@ Description: This test is designed to detect if ASE data reveals sufficient imba
   deviations (sample estimates are provided). The output is a data frame 
   containing raw and adjusted p-values using Benjamini-Hoschberg method, 
   and a plot showing outlier data points in red.
-Depends: 
+Depends: R (>= 2.10)
+Recommend: vgdat
 License: GPL-2
 Encoding: UTF-8
 URL: https://github.com/PejLab/ANEVA-DOT
 BugReports: https://github.com/PejLab/ANEVA-DOT/issues
 LazyData: true
+RoxygenNote: 6.0.1

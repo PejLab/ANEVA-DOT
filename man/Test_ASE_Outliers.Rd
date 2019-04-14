@@ -18,7 +18,7 @@ difference (reference bias due to alignment). The simplest way to get such an es
 be to get the median ratio between eh1 and eh2 across the entire library.}
 
 \item{p0}{An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
-due to noise when it is essentially not there. (For v7: LAMP = 0.0003).}
+due to noise when it is essentially not there (for GTEx v7: LAMP = 0.0003).}
 }
 \value{
 Undajusted 2-sided p-value, testing whether: H0:There does not exist a significantly

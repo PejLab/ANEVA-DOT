@@ -24,7 +24,7 @@ be to get the median ratio between eh1 and eh2 across the entire library.}
 \item{p0}{An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
 due to noise when it is essentially not there. (For v7: LAMP = 0.0003).}
 
-\item{log_BinCoeff}{a vector of log transformed binomial coefficients 0:N=eh1+eh2.}
+\item{log_BinCoeff}{a vector of natural log (ln) transformed binomial coefficients 0:N=eh1+eh2.}
 }
 \value{
 The integrand over which we wish to integrate to get

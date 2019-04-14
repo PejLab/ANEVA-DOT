@@ -9,46 +9,47 @@ ANEVA_DOT(ASEdat, output_columns = c("refCount", "altCount"),
   FDR = 0.05, coverage = 10, plot = TRUE)
 }
 \arguments{
-\item{ASEdat}{Dataframe containing reference and alternative count data.}
+\item{ASEdat}{Dataframe containing columns with reference and alternative count data.}
 
-\item{output_columns}{A vector containing additional ASEdat column name strings which the user
+\item{output_columns}{Vector containing any ASEdat column name strings which the user
 wishes to duplicate in the output.}
 
-\item{eh1}{A string with the column name of the reference count data}
+\item{eh1}{String containing the column name of the reference count data.}
 
-\item{eh2}{A string with the column name of the alternative count data}
+\item{eh2}{String with the column name of the alternative count data.}
 
-\item{Eg_std}{a vector containing standard deviation in the total gene expression in a healthy
-population. Eg_std vector must be in one-to-one correspondence with ASE count data, and must be
-ordered correctly. Can be a vector in ASEdat if present. P-values will not be generated for
-records with missing or infinite variances.}
+\item{Eg_std}{Vector containing standard deviation in the total gene expression in a healthy
+population. P-values will not be generated for records with missing or infinite standard
+deviations. Eg_std vector must be in one-to-one correspondence with ASE count data, and must
+be ordered correctly. For additional utilities and starter code to match Ensembl IDs with
+population variance estimates from GTEx v7, please see vgdat package.}
 
 \item{r0}{The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 difference (reference bias due to alignment). The simplest way to get such an estimate would
-be to get the median ratio between eh1 and eh2 across the entire library. This is done
-automatically if no user-specified r0 value is detected. Can be a single value across entire
-library, or a SNP-wise vector.}
+be to get the median ratio between eh1 and eh2 across the entire library (i.e., eh1/(eh1+eh2)).
+This is done automatically if no user-specified r0 value is detected. Can be a single value
+across entire library, or a SNP-wise vector.}
 
 \item{p0}{An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
-due to noise when it is essentially not there. (For v7: LAMP = 0.0003) Can be a single
+due to noise when it is essentially not there (for GTEx v7: LAMP = 0.0003). Can be a single
 value across entire library, or a SNP-wise vector.}
 
 \item{FDR}{A numeric value between 0 and 1 indicating the desired false discovery rate.
 Default FDR is 0.05.}
 
-\item{coverage}{A numeric value such that if total allelic count is less than that value,
+\item{coverage}{A numeric value such that if total allelic count is less than this value,
 p-values will not be generated for that record. Default value is 10.}
 
-\item{plot}{A logical T/F indicating whether plots should be generated for the test data}
+\item{plot}{Logical T/F indicating whether plots should be generated for the test data.}
 }
 \value{
-A table containing the user-specified output_columns, as well as unadjusted and
-adjusted p-values for detection of potential dosage outlier. P-values are adjusted using
-Benjamini-Hoschberg method. P-values are not generated for records with missing or infinite
-variances.
+Data frame containing the user-specified output_columns, as well as unadjusted and
+adjusted p-values for detection of potential dosage outlier, testing H0:There does not exist
+a significantly abnormal allelic imbalance for this SNP, vs. H1: Allelic ratio significantly
+deviates from normal population. P-values are adjusted using Benjamini-Hoschberg method.
+P-values are not generated for records with missing or infinite standard deviations.
 }
 \description{
 This test is designed to detect if ASE data reveals sufficient allelic imbalance to induce
 an outlier in total gene expression.
 }
-\examples{}

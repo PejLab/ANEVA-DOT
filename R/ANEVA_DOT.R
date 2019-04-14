@@ -3,33 +3,34 @@
 #' This test is designed to detect if ASE data reveals sufficient allelic imbalance to induce
 #' an outlier in total gene expression.
 #'
-#' @param ASEdat Dataframe containing reference and alternative count data.
-#' @param output_columns A vector containing additional ASEdat column name strings which the user
+#' @param ASEdat Dataframe containing columns with reference and alternative count data.
+#' @param output_columns Vector containing any ASEdat column name strings which the user
 #' wishes to duplicate in the output.
-#' @param eh1 A string with the column name of the reference count data
-#' @param eh2 A string with the column name of the alternative count data
-#' @param Eg_std a vector containing standard deviation in the total gene expression in a healthy
-#' population. Eg_std vector must be in one-to-one correspondence with ASE count data, and must be
-#' ordered correctly. Can be a vector in ASEdat if present. P-values will not be generated for
-#' records with missing or infinite variances.
+#' @param eh1 String containing the column name of the reference count data.
+#' @param eh2 String with the column name of the alternative count data.
+#' @param Eg_std Vector containing standard deviation in the total gene expression in a healthy
+#' population. P-values will not be generated for records with missing or infinite standard
+#' deviations. Eg_std vector must be in one-to-one correspondence with ASE count data, and must
+#' be ordered correctly. For additional utilities and starter code to match Ensembl IDs with
+#' population variance estimates from GTEx v7, please see vgdat package.
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
-#' be to get the median ratio between eh1 and eh2 across the entire library. This is done
-#' automatically if no user-specified r0 value is detected. Can be a single value across entire
-#' library, or a SNP-wise vector.
+#' be to get the median ratio between eh1 and eh2 across the entire library (i.e., eh1/(eh1+eh2)).
+#' This is done automatically if no user-specified r0 value is detected. Can be a single value
+#' across entire library, or a SNP-wise vector.
 #' @param p0 An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
-#' due to noise when it is essentially not there. (For v7: LAMP = 0.0003) Can be a single
+#' due to noise when it is essentially not there (for GTEx v7: LAMP = 0.0003). Can be a single
 #' value across entire library, or a SNP-wise vector.
 #' @param FDR A numeric value between 0 and 1 indicating the desired false discovery rate.
 #' Default FDR is 0.05.
-#' @param coverage A numeric value such that if total allelic count is less than that value,
+#' @param coverage A numeric value such that if total allelic count is less than this value,
 #' p-values will not be generated for that record. Default value is 10.
-#' @param plot A logical T/F indicating whether plots should be generated for the test data
-#' @return A table containing the user-specified output_columns, as well as unadjusted and
-#' adjusted p-values for detection of potential dosage outlier. P-values are adjusted using
-#' Benjamini-Hoschberg method. P-values are not generated for records with missing or infinite
-#' variances.
-#' @examples
+#' @param plot Logical T/F indicating whether plots should be generated for the test data.
+#' @return Data frame containing the user-specified output_columns, as well as unadjusted and
+#' adjusted p-values for detection of potential dosage outlier, testing H0:There does not exist
+#' a significantly abnormal allelic imbalance for this SNP, vs. H1: Allelic ratio significantly
+#' deviates from normal population. P-values are adjusted using Benjamini-Hoschberg method.
+#' P-values are not generated for records with missing or infinite standard deviations.
 #' @export
 ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
                    eh2 = "altCount", Eg_std, r0 = NULL, p0 = NULL, FDR = 0.05,
@@ -53,15 +54,15 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
   pb <- txtProgressBar(min = 0, max = nrow(ASEdat), style = 3)
   #get p-values
   for (i in 1:nrow(ASEdat)){
-    if (!is.finite(Eg_std[i])){
+    if (!is.finite(Eg_std[i])){ #check for finite standard deviation
       output$p.val[i]<-NA
       next
     }
-    else if ((ASEdat[i,eh1]+ASEdat[i,eh2])>=coverage){
+    else if ((ASEdat[i,eh1]+ASEdat[i,eh2])>=coverage){ #check that minimum coverage has been met
       output$p.val[i]<-Test_ASE_Outliers(Eg_std[i],ASEdat[i,eh1],ASEdat[i,eh2],r0[i],p0[i])
     }
     else{
-      output$p.val[i]<-NA #due to inadequate coverage
+      output$p.val[i]<-NA #NA due to inadequate coverage
     }
     # update progress bar
     if(i %% 20){
@@ -71,7 +72,6 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
   }
   close(pb)
   #Carry out Benjamini-Hochberg procedure to get adjusted p-values
-  #(CHECK TO BE SURE THIS DOES NOT INCLUDE THE NA's)
   output$adj.pval<-p.adjust(output$p.val,method = "BH")
 
   #Carry out plotting if called for
@@ -84,7 +84,6 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
          xlab = "Reference Count", ylab = "Alternative Count",
          col = ifelse(result$adj.pval<.05,'red','black'), pch = 19)
     abline(a = 0, b = 1, col = "blue")
-    #abline(a = c(0,0), b = c(1,(1-r0)/r0), col = c("blue","red")) #not implemented currently
   }
   return(output)
 }
@@ -101,7 +100,7 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
 #' be to get the median ratio between eh1 and eh2 across the entire library.
 #' @param p0 An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
-#' due to noise when it is essentially not there. (For v7: LAMP = 0.0003).
+#' due to noise when it is essentially not there (for GTEx v7: LAMP = 0.0003).
 #' @return Undajusted 2-sided p-value, testing whether: H0:There does not exist a significantly
 #' abnormal allelic imbalance for this SNP, vs. H1: Allelic ratio significantly deviates from
 #' normal population.
@@ -132,14 +131,14 @@ Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
 #' be to get the median ratio between eh1 and eh2 across the entire library.
 #' @param p0 An average noise rate p(R->A) or p(A->R), i.e., the probability of seeing an allele
 #' due to noise when it is essentially not there. (For v7: LAMP = 0.0003).
-#' @param log_BinCoeff a vector of log transformed binomial coefficients 0:N=eh1+eh2.
+#' @param log_BinCoeff a vector of natural log (ln) transformed binomial coefficients 0:N=eh1+eh2.
 #' @return The integrand over which we wish to integrate to get
 #' desired p-values
 
 integrand<-function(dE, eh1, eh2, Eg_std, r0, p0, log_BinCoeff){
   N<-eh1+eh2
   Prob.dE<-dnorm(dE,0,Eg_std) #probability of observed dE in population
-  dE[dE<log(.5)]<-(log(.5)) #-1 is the minimum possible loss of expression in log2
+  dE[dE<log(.5)]<-(log(.5)) #-1 is the minimum possible loss of expression in log2 (log base 2)
   kr<-2*exp(dE)-1 #regulatory effect size of the mutation
   rr<-kr/(kr+1) #allelic ratio of the mutated haplotype
   rn<-rr+p0*(1-2*rr) #allelic ratio of the mutated haplotype after accounting for noise

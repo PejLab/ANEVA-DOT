@@ -21,4 +21,3 @@ This function is designed to estimate the reference ratio in the absence of any 
 difference; that is, the reference bias due to alignment. This is done by obtaining the
 median ratio between eh1 and eh2 across the top 20% expressed loci in the library.
 }
-\examples{}
