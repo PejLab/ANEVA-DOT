@@ -8,11 +8,14 @@
 #' wishes to duplicate in the output.
 #' @param eh1 String containing the column name of the reference count data.
 #' @param eh2 String with the column name of the alternative count data.
-#' @param Eg_std Vector containing standard deviation in the total gene expression in a healthy
-#' population. P-values will not be generated for records with missing or infinite standard
-#' deviations. Eg_std vector must be in one-to-one correspondence with ASE count data, and must
-#' be ordered correctly. For additional utilities and starter code to match Ensembl IDs with
-#' population variance estimates from GTEx v7, please see vgdat package.
+#' @param Eg_std Vector containing genetic standard deviation, the square root of genetic
+#' variation in regulation in general population in natural log scale (numeric value). Variance
+#' values from GTEx are available on Github.com/PejLab. For additional utilities and starter code
+#' to match Ensembl IDs with population variance estimates from GTEx v7, please see vgdat package.
+#' Square root transformation must be applied to GTEx variance estimates before running this test.
+#' P-values will not be generated for records with missing or infinite standard deviations. Eg_std
+#' vector must be in one-to-one correspondence with ASE count data, and must
+#' be ordered correctly.
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
 #' be to get the median ratio between eh1 and eh2 across the entire library (i.e., eh1/(eh1+eh2)).
@@ -93,7 +96,8 @@ ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "re
 #'
 #' This is a black box function which performs the statistical test on a single SNP.
 #'
-#' @param Eg_std Standard deviation in the total gene expression in a healthy population.
+#' @param Eg_std Genetic standard deviation, the square root of genetic
+#' variation in regulation in general population in natural log scale (numeric value).
 #' @param eh1 Integer value for of expression of haplotype 1.
 #' @param eh2 Integer value of expression of haplotype 2.
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
@@ -124,8 +128,8 @@ Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
 #' (variable of integration)
 #' @param eh1 Integer value for count of expression of haplotype1
 #' @param eh2 Integer value for count of expression of haplotype2
-#' @param Eg_std Numeric value for the estimated dosage standard deviation
-#' in normal population (can be derived from GTEx)
+#' @param Eg_std Vector containing genetic standard deviation, the square root of genetic
+#' variation in regulation in general population in natural log scale (numeric value).
 #' @param r0 The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 #' difference (reference bias due to alignment). The simplest way to get such an estimate would
 #' be to get the median ratio between eh1 and eh2 across the entire library.
