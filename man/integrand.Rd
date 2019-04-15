@@ -14,8 +14,8 @@ integrand(dE, eh1, eh2, Eg_std, r0, p0, log_BinCoeff)
 
 \item{eh2}{Integer value for count of expression of haplotype2}
 
-\item{Eg_std}{Numeric value for the estimated dosage standard deviation
-in normal population (can be derived from GTEx)}
+\item{Eg_std}{Vector containing genetic standard deviation, the square root of genetic
+variation in regulation in general population in natural log scale (numeric value).}
 
 \item{r0}{The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 difference (reference bias due to alignment). The simplest way to get such an estimate would

@@ -17,7 +17,8 @@
 sample_ASE
 }
 \description{
-A sample of Allele Specific Expression (ASE) data from a single tissue sample from a GTEx v7 donor.
+A sample of Allele Specific Expression (ASE) data from a single tissue sample from a GTEx v7 donor
+for use with the short tutorial on the package README.
 The data was produced using phASEr \url{https://github.com/secastel/phaser}
 }
 \keyword{datasets}

@@ -18,11 +18,14 @@ wishes to duplicate in the output.}
 
 \item{eh2}{String with the column name of the alternative count data.}
 
-\item{Eg_std}{Vector containing standard deviation in the total gene expression in a healthy
-population. P-values will not be generated for records with missing or infinite standard
-deviations. Eg_std vector must be in one-to-one correspondence with ASE count data, and must
-be ordered correctly. For additional utilities and starter code to match Ensembl IDs with
-population variance estimates from GTEx v7, please see vgdat package.}
+\item{Eg_std}{Vector containing genetic standard deviation, the square root of genetic
+variation in regulation in general population in natural log scale (numeric value). Variance
+values from GTEx are available on Github.com/PejLab. For additional utilities and starter code
+to match Ensembl IDs with population variance estimates from GTEx v7, please see vgdat package.
+Square root transformation must be applied to GTEx variance estimates before running this test.
+P-values will not be generated for records with missing or infinite standard deviations. Eg_std
+vector must be in one-to-one correspondence with ASE count data, and must
+be ordered correctly.}
 
 \item{r0}{The ratio of the eh1 allele (i.e., eh1/(eh1+eh2)) in the absence of any regulatory
 difference (reference bias due to alignment). The simplest way to get such an estimate would
