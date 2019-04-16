@@ -5,10 +5,24 @@ Author: Pejman Mohammadi (firstname@Scripps.edu), Christina Sousa (sousa.19@osu.
 
 This test is designed to detect if ASE data reveals sufficient imbalance to induce an outlier in total gene expression. The test takes in in two vectors of ASE count data from an R data frame, as well as a vector of population estimates for standard deviations (sample estimates are provided). The output is a data frame containing raw and adjusted p-values using Benjamini-Hoschberg method, and a plot showing outlier data points in red.
 
-To get started, here's an example:
+To install the R package, you can use the devtools package:
+
+install.packages("devtools") 
+library(devtools)
+install_github("PejLab/ANEVA-DOT")
+
+Once installed, you can type `?ANEVADOT` to view package documentation and `?ANEVA_DOT` to view test function documentation.
+
+If you don't know how to generate ASE data, you can start here: https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/
+
+Here is an example to get started with:
 
 ```r
 library(ANEVADOT)
+
+# Import sample data and GTEx variance data
+sample_ASE <- read.delim("~/Jobs/STSI/ASEtestTools/data/sample_ASE.txt")
+Vg_GTEx_v7 <- read.delim("~/Jobs/STSI/ASEtestTools/data/Vg_GTEx_v7.txt")
 
 # Define the output columns
 output_columns <- c("GENE_ID", "TISSUE_ID",  "REF_COUNT", "ALT_COUNT", "TOTAL_COUNT", "NULL_RATIO")
