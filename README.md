@@ -13,8 +13,11 @@ install_github("PejLab/ANEVA-DOT")
 
 Once installed, you can type `?ANEVADOT` to view package documentation and `?ANEVA_DOT` to view test function documentation.
 
+<<<<<<< HEAD
 If you don't know how to generate ASE data, you can start here: https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/
 
+=======
+>>>>>>> aa9b7dcf5adb647a0d7d833734fde968bdfe21d8
 Here is an example to get started with:
 
 ```r
