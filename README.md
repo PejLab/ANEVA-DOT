@@ -15,7 +15,9 @@ To install the R package, you can use the devtools package:
 
 Once installed, you can type `?ANEVADOT` to view package documentation and `?ANEVA_DOT` to view test function documentation.
 
-If you don't know how to generate ASE data, you can start here: https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/ and here: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0762-6
+If you don't know how to generate ASE data, you can start here: https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/
+
+and here: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0762-6
 
 Here is an example to get started with:
 
