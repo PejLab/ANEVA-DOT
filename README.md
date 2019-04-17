@@ -7,9 +7,11 @@ This test is designed to detect if ASE data reveals sufficient imbalance to indu
 
 To install the R package, you can use the devtools package:
 
-install.packages("devtools") 
-library(devtools)
-install_github("PejLab/ANEVA-DOT")
+`install.packages("devtools")`
+
+`library(devtools)`
+
+`install_github("PejLab/ANEVA-DOT")`
 
 Once installed, you can type `?ANEVADOT` to view package documentation and `?ANEVA_DOT` to view test function documentation.
 
