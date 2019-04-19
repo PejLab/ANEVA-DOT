@@ -24,10 +24,6 @@ Here is an example to get started with:
 ```r
 library(ANEVADOT)
 
-# Import sample data and GTEx variance data
-sample_ASE <- read.delim("~/Jobs/STSI/ASEtestTools/data/sample_ASE.txt")
-Vg_GTEx_v7 <- read.delim("~/Jobs/STSI/ASEtestTools/data/Vg_GTEx_v7.txt")
-
 # Define the output columns
 output_columns <- c("GENE_ID", "TISSUE_ID",  "REF_COUNT", "ALT_COUNT", "TOTAL_COUNT", "NULL_RATIO")
 
