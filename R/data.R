@@ -1,7 +1,8 @@
 #' Vg_GTEx_v7
 #'
 #' A dataset containing the estimated variance in gene expression obtained
-#' from the GTEx project.
+#' from the GTEx project. Use the command View(VG_GTEx_v7) to have a look at
+#' the data.
 #'
 #' The Genotype-Tissue Expression (GTEx) Project was supported by the Common
 #' Fund of the Office of the Director of the National Institutes of Health,
