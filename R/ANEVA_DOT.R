@@ -34,8 +34,29 @@
 #' a significantly abnormal allelic imbalance for this SNP, vs. H1: Allelic ratio significantly
 #' deviates from normal population. P-values are adjusted using Benjamini-Hoschberg method.
 #' P-values are not generated for records with missing or infinite standard deviations.
+#' @examples
+#' # Define the output columns
+#' output_columns <- c("GENE_ID", "TISSUE_ID",  "REF_COUNT", "ALT_COUNT", "TOTAL_COUNT", "NULL_RATIO")
+#'
+#' # re organize the tables by:
+#' # 1: Selecting only genes that have Vg scores available
+#' # 2: Reordering ASE data and Vg scores so they align
+#' tiss <- "MSCLSK" # The data comes from a skeletal muscle sample
+#' covered_genes <- intersect(Vg_GTEx_v7$IDs, sample_ASE$GENE_ID)
+#' covered_gene_Vgs <- Vg_GTEx_v7[match(covered_genes, Vg_GTEx_v7$IDs), tiss]
+#' covered_gene_ASE_data <- sample_ASE[match(covered_genes, sample_ASE$GENE_ID),]
+#'
+#' # Take the square root of the Vg scores to the get the Standard Deviation (SDg)
+#' covered_gene_SDgs <- sqrt(covered_gene_Vgs)
+#'
+#' # Run ANEVA-DOT
+#' ANEVADOT_scores <- ANEVADOT_test(covered_gene_ASE_data, output_columns = output_columns,
+#'                                  eh1 = "REF_COUNT", eh2 = "ALT_COUNT", coverage = 10,
+#'                                  r0 = covered_gene_ASE_data$NULL_RATIO,
+#'                                  Eg_std = covered_gene_SDgs, plot = TRUE)
 #' @export
-ANEVA_DOT<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
+
+ANEVADOT_test<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
                    eh2 = "altCount", Eg_std, r0 = NULL, p0 = NULL, FDR = 0.05,
                    coverage = 10, plot = TRUE){
   output<-ASEdat[,output_columns]

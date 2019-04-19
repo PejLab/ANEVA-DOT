@@ -13,7 +13,7 @@ To install the R package, you can use the devtools package:
 
 `install_github("PejLab/ANEVA-DOT")`
 
-Once installed, you can type `?ANEVADOT` to view package documentation and `?ANEVA_DOT` to view test function documentation.
+Once installed, you can type `?ANEVADOT` to view package documentation and `?ANEVADOT_test` to view test function documentation.
 
 If you don't know how to generate ASE data, you can start here: https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/
 
@@ -39,10 +39,10 @@ covered_gene_ASE_data <- sample_ASE[match(covered_genes, sample_ASE$GENE_ID),]
 covered_gene_SDgs <- sqrt(covered_gene_Vgs) 
 
 # Run ANEVA-DOT
-ANEVADOT_scores <- ANEVA_DOT(covered_gene_ASE_data, output_columns = output_columns, 
+ANEVADOT_scores <- ANEVADOT_test(covered_gene_ASE_data, output_columns = output_columns, 
                           eh1 = "REF_COUNT", eh2 = "ALT_COUNT", coverage = 10, 
                           r0 = covered_gene_ASE_data$NULL_RATIO,
-                          Eg_std = covered_gene_SDgs, plot = T)
+                          Eg_std = covered_gene_SDgs, plot = TRUE)
 ```
 
 BugReports: `https://github.com/PejLab/ANEVA-DOT/issues`

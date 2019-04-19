@@ -66,7 +66,8 @@ Vg_GTEx_v7
 }
 \description{
 A dataset containing the estimated variance in gene expression obtained
-from the GTEx project.
+from the GTEx project. Use the command View(VG_GTEx_v7) to have a look at
+the data.
 }
 \details{
 The Genotype-Tissue Expression (GTEx) Project was supported by the Common

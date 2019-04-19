@@ -1,4 +1,4 @@
-export(ANEVA_DOT)
+export(ANEVADOT_test)
 export(get_r0)
 importFrom("graphics", "abline")
 importFrom("stats", "dnorm", "integrate", "median", "p.adjust",
