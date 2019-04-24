@@ -44,9 +44,9 @@ ANEVADOT_scores <- ANEVADOT_test(covered_gene_ASE_data, output_columns = output_
 ## Further notes:
 - If you don't know how to **generate ASE data**, you can start [here](https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/) and [here](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0762-6).
 
-- You can download our pre-calculated Vg estimates for available datasets at [Datasets/Reference_Vg_Estimates](https://github.com/PejLab/Datasets/tree/master/Reference_Vg_Estimates).
+- You can download our **pre-calculated Vg estimates** for available datasets at [Datasets/Reference_Vg_Estimates](https://github.com/PejLab/Datasets/tree/master/Reference_Vg_Estimates).
 
-- Consider excluding false positive prone genes based on our summary stats from running ANEVA-DOT on general population available at [Datasets/ANEVA_DOT_frequencies](https://github.com/PejLab/Datasets/tree/master/ANEVA_DOT_frequencies).
+- Consider **excluding false positive prone genes** based on our summary stats from running ANEVA-DOT on general population available at [Datasets/ANEVA_DOT_frequencies](https://github.com/PejLab/Datasets/tree/master/ANEVA_DOT_frequencies).
 
 
 BugReports: `https://github.com/PejLab/ANEVA-DOT/issues`
