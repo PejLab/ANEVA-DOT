@@ -10,7 +10,8 @@ To install the R package, you can use the devtools package:
 ```r
 install.packages("devtools") 
 library(devtools)
-install_github("PejLab/ANEVA-DOT")```
+install_github("PejLab/ANEVA-DOT")
+```
 
 Once installed, you can type `?ANEVADOT` to view package documentation and `?ANEVADOT_test` to view test function documentation.
 
