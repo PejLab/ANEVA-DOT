@@ -1,23 +1,19 @@
 # ANEVA-DOT
 ANEVA Dosage Outlier Test
 
-Author: Pejman Mohammadi (firstname@Scripps.edu), Christina Sousa (sousa.19@osu.edu)
+Developed by: Pejman Mohammadi (firstname@Scripps.edu), Christina Sousa (sousa.19@osu.edu)
 
 This test is designed to detect if ASE data reveals sufficient imbalance to induce an outlier in total gene expression. The test takes in in two vectors of ASE count data from an R data frame, as well as a vector of population estimates for standard deviations (sample estimates are provided). The output is a data frame containing raw and adjusted p-values using Benjamini-Hoschberg method, and a plot showing outlier data points in red.
 
 To install the R package, you can use the devtools package:
 
-`install.packages("devtools")`
-
-`library(devtools)`
-
-`install_github("PejLab/ANEVA-DOT")`
+```r
+install.packages("devtools") 
+library(devtools)
+install_github("PejLab/ANEVA-DOT")
+```
 
 Once installed, you can type `?ANEVADOT` to view package documentation and `?ANEVADOT_test` to view test function documentation.
-
-If you don't know how to generate ASE data, you can start here: https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/
-
-and here: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0762-6
 
 Here is an example to get started with:
 
@@ -45,6 +41,7 @@ ANEVADOT_scores <- ANEVADOT_test(covered_gene_ASE_data, output_columns = output_
                           Eg_std = covered_gene_SDgs, plot = TRUE)
 ```
 
+<<<<<<< HEAD
 If you wish to read your own file into an R data frame for use with the test, you can use one of the following commands:
 
 ```r
@@ -70,5 +67,14 @@ write.table(x, file, append = FALSE, sep = " ", dec = ".",
 #to write a .csv file
 write.csv(x, file = "my_data.csv")
 ```
+=======
+## Further notes:
+- If you don't know how to **generate ASE data**, you can start [here](https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/) and [here](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0762-6).
+
+- You can download our **pre-calculated Vg estimates** for available datasets at [Datasets/Reference_Vg_Estimates](https://github.com/PejLab/Datasets/tree/master/Reference_Vg_Estimates).
+
+- Consider **excluding false positive prone genes** based on our summary stats from running ANEVA-DOT on general population available at [Datasets/ANEVA_DOT_frequencies](https://github.com/PejLab/Datasets/tree/master/ANEVA_DOT_frequencies).
+
+>>>>>>> c30ddad0ce2ec3019c9491632f9ea66a9d9c2fd9
 
 BugReports: `https://github.com/PejLab/ANEVA-DOT/issues`
