@@ -45,4 +45,30 @@ ANEVADOT_scores <- ANEVADOT_test(covered_gene_ASE_data, output_columns = output_
                           Eg_std = covered_gene_SDgs, plot = TRUE)
 ```
 
+If you wish to read your own file into an R data frame for use with the test, you can use one of the following commands:
+
+```r
+#for general tabular data (replace `file` with "filename.txt", and be sure to
+#set working directory):
+read.table(file, header = FALSE, sep = "", dec = ".")
+
+#for tab separated .txt file:
+read.delim(file, header = TRUE, sep = "\t", dec = ".")
+
+#for .csv files:
+read.csv(file, header = TRUE, sep = ",", dec = ".")
+```
+
+You can also write a text or csv file from your output with the following commands:
+
+```r
+#to write a text file (x is the data frame to write, `file` is the 
+#"filename.txt" to store the file.
+write.table(x, file, append = FALSE, sep = " ", dec = ".",
+            row.names = TRUE, col.names = TRUE)
+            
+#to write a .csv file
+write.csv(x, file = "my_data.csv")
+```
+
 BugReports: `https://github.com/PejLab/ANEVA-DOT/issues`
