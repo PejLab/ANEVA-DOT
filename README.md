@@ -43,7 +43,8 @@ ANEVADOT_scores <- ANEVADOT_test(covered_gene_ASE_data, output_columns = output_
 ```
 =======
 ## Further notes:
-- If you don't know how to **generate ASE data**, you can start [here](https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/) and [here](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0762-6).
+- If you don't know how to **generate ASE data**, you can start [here](https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/) and [here](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0762-6). Note: This Vg estimates are derived from variant level ASE data and are not fully compatible with haplotypic read counts such as Phaser data. Use haplotypic counts only if you don't have have acceess to variant level data.
+
 
 - You can download our **pre-calculated Vg estimates** for available datasets at [Datasets/Reference_Vg_Estimates](https://github.com/PejLab/Datasets/tree/master/Reference_Vg_Estimates).
 
