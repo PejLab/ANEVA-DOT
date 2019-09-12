@@ -1,4 +1,6 @@
-# ANEVA-DOT
+# ANEVA-DOT [![DOI](https://zenodo.org/badge/140601694.svg)](https://zenodo.org/badge/latestdoi/140601694)
+
+
 ANEVA Dosage Outlier Test
 
 Package developed by: Pejman Mohammadi (firstname@Scripps.edu), Christina Sousa (sousa.19@osu.edu).
