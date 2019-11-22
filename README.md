@@ -80,4 +80,5 @@ write.csv(x, file = "my_data.csv")
 
 
 BugReports: `https://github.com/PejLab/ANEVA-DOT/issues`
+
 Citation: Mohammadi, Pejman, et al. [Genetic regulatory variation in populations informs transcriptome analysis in rare disease](https://science.sciencemag.org/content/366/6463/351.abstract). Science 366.6463 (2019): 351-356. 
