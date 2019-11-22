@@ -4,7 +4,7 @@
 ANEVA Dosage Outlier Test
 
 Package developed by: Pejman Mohammadi (firstname@Scripps.edu), Christina Sousa (sousa.19@osu.edu).
-See our [preprint](https://www.biorxiv.org/content/biorxiv/early/2019/05/09/632794.full.pdf) for method descritions.
+See our [paper](https://science.sciencemag.org/content/366/6463/351.abstract) for method descritions.
 
 This test is designed to detect if ASE data reveals sufficient imbalance to induce an outlier in total gene expression. The test takes in in two vectors of ASE count data from an R data frame, as well as a vector of population estimates for standard deviations (sample estimates are provided). The output is a data frame containing raw and adjusted p-values using Benjamini-Hoschberg method, and a plot showing outlier data points in red.
 
@@ -80,3 +80,4 @@ write.csv(x, file = "my_data.csv")
 
 
 BugReports: `https://github.com/PejLab/ANEVA-DOT/issues`
+Citation: Mohammadi, Pejman, et al. [Genetic regulatory variation in populations informs transcriptome analysis in rare disease](https://science.sciencemag.org/content/366/6463/351.abstract). Science 366.6463 (2019): 351-356. 
