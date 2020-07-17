@@ -29,6 +29,7 @@
 #' @param coverage A numeric value such that if total allelic count is less than this value,
 #' p-values will not be generated for that record. Default value is 10.
 #' @param plot Logical T/F indicating whether plots should be generated for the test data.
+#' @param jobs Number of workers to use for parallelization. Default value is 1.
 #' @return Data frame containing the user-specified output_columns, as well as unadjusted and
 #' adjusted p-values for detection of potential dosage outlier, testing H0:There does not exist
 #' a significantly abnormal allelic imbalance for this SNP, vs. H1: Allelic ratio significantly
@@ -54,11 +55,14 @@
 #'                                  eh1 = "REF_COUNT", eh2 = "ALT_COUNT", coverage = 10,
 #'                                  r0 = covered_gene_ASE_data$NULL_RATIO,
 #'                                  Eg_std = covered_gene_SDgs, plot = TRUE)
+#' @import foreach parallel doSNOW
 #' @export
 
 ANEVADOT_test<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
                    eh2 = "altCount", Eg_std, r0 = NULL, p0 = NULL, FDR = 0.05,
-                   coverage = 10, plot = TRUE){
+                   coverage = 10, plot = TRUE, jobs = 1){
+  # FIXME: we need this explicit import to make %dopar% work
+  library(foreach)
   output<-ASEdat[,output_columns]
   if (is.null(r0)){
     r0<-get_r0(ASEdat, eh1, eh2)
@@ -77,24 +81,26 @@ ANEVADOT_test<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 =
   #create progress bar
   pb <- txtProgressBar(min = 0, max = nrow(ASEdat), style = 3)
   #get p-values
-  for (i in 1:nrow(ASEdat)){
+  cl <- parallel::makeCluster(jobs)
+  doSNOW::registerDoSNOW(cl)
+  progress <- function(n) setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
+  output$p.val <- foreach(i=1:nrow(ASEdat), .combine='c', .options.snow = opts) %dopar% {
+    p.val<-NA
     if (!is.finite(Eg_std[i])){ #check for finite standard deviation
-      output$p.val[i]<-NA
-      next
+      p.val <- NA;
     }
     else if ((ASEdat[i,eh1]+ASEdat[i,eh2])>=coverage){ #check that minimum coverage has been met
-      output$p.val[i]<-Test_ASE_Outliers(Eg_std[i],ASEdat[i,eh1],ASEdat[i,eh2],r0[i],p0[i])
+      p.val<-Test_ASE_Outliers(Eg_std[i],ASEdat[i,eh1],ASEdat[i,eh2],r0[i],p0[i])
     }
     else{
-      output$p.val[i]<-NA #NA due to inadequate coverage
+      p.val<-NA #NA due to inadequate coverage
     }
-    # update progress bar
-    if(i %% 20){
-      #Sys.sleep(0.001)
-      setTxtProgressBar(pb, i)
-    }
+    return(p.val)
   }
+  parallel::stopCluster(cl)
   close(pb)
+
   #Carry out Benjamini-Hochberg procedure to get adjusted p-values
   output$adj.pval<-p.adjust(output$p.val,method = "BH")
 
@@ -137,7 +143,7 @@ Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
     p.val<-1
   }
   else{
-  p.val<-integrate(integrand,-rad,rad,eh1,eh2, Eg_std, r0, p0, log_BinCoeff, abs.tol = 0, rel.tol = 1e-4)$value
+  p.val<-integrate(integrand,-rad,rad,eh1,eh2, Eg_std, r0, p0, log_BinCoeff, abs.tol = 0, rel.tol = 1e-4, stop.on.error = FALSE)$value
   }
   return(p.val)
 }

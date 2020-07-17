@@ -12,6 +12,7 @@ Description: This test is designed to detect if ASE data reveals sufficient imba
   containing raw and adjusted p-values using Benjamini-Hoschberg method, 
   and a plot showing outlier data points in red.
 Depends: R (>= 2.10)
+Imports: foreach, parallel, doSNOW
 Recommend: vgdat
 License: GPL-2
 Encoding: UTF-8
