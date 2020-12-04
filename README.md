@@ -8,6 +8,8 @@ See our [paper](https://science.sciencemag.org/content/366/6463/351.abstract) fo
 
 This test is designed to detect if ASE data reveals sufficient imbalance to induce an outlier in total gene expression. The test takes in in two vectors of ASE count data from an R data frame, as well as a vector of population estimates for standard deviations (sample estimates are provided). The output is a data frame containing raw and adjusted p-values using Benjamini-Hoschberg method, and a plot showing outlier data points in red.
 
+<span style="color:blue">CAUTION: Haplotype level phaser data can't be used with ANEVA-DOT at the moment. We are working on adding full phaser support as a new feature sometime in the future.</span>
+
 To install the R package, you can use the devtools package:
 
 ```r
