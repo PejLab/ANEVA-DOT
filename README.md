@@ -4,7 +4,7 @@
 ANEVA Dosage Outlier Test
 
 Package developed by: Pejman Mohammadi (firstname@Scripps.edu), Christina Sousa (sousa.19@osu.edu).
-See our [paper](https://science.sciencemag.org/content/366/6463/351.abstract) for method descritions.
+See our [paper](https://science.sciencemag.org/content/366/6463/351.abstract) for method descriptions.
 
 ```diff
 - CAUTION: Haplotype level phaser data can't be used with ANEVA-DOT at the moment. We are working on adding full phaser support as a new feature sometime in the future.
