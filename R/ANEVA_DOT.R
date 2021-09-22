@@ -57,8 +57,8 @@
 #' @export
 
 ANEVADOT_test<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 = "refCount",
-                   eh2 = "altCount", Eg_std, r0 = NULL, p0 = NULL, FDR = 0.05,
-                   coverage = 10, plot = TRUE){
+                        eh2 = "altCount", Eg_std, r0 = NULL, p0 = NULL, FDR = 0.05,
+                        coverage = 10, plot = TRUE){
   output<-ASEdat[,output_columns]
   if (is.null(r0)){
     r0<-get_r0(ASEdat, eh1, eh2)
@@ -97,7 +97,7 @@ ANEVADOT_test<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 =
   close(pb)
   #Carry out Benjamini-Hochberg procedure to get adjusted p-values
   output$adj.pval<-p.adjust(output$p.val,method = "BH")
-
+  
   #Carry out plotting if called for
   if (plot==TRUE){
     result<-output
@@ -111,7 +111,6 @@ ANEVADOT_test<-function(ASEdat, output_columns = c("refCount","altCount"), eh1 =
   }
   return(output)
 }
-
 
 #' Test ASE Outliers
 #'
@@ -137,7 +136,7 @@ Test_ASE_Outliers<-function(Eg_std, eh1, eh2, r0, p0){
     p.val<-1
   }
   else{
-  p.val<-integrate(integrand,-rad,rad,eh1,eh2, Eg_std, r0, p0, log_BinCoeff, abs.tol = 0, rel.tol = 1e-4)$value
+    p.val<-integrate(integrand,-rad,rad,eh1,eh2, Eg_std, r0, p0, log_BinCoeff, abs.tol = 0, rel.tol = 1e-4, stop.on.error = FALSE)$value
   }
   return(p.val)
 }
@@ -177,7 +176,6 @@ integrand<-function(dE, eh1, eh2, Eg_std, r0, p0, log_BinCoeff){
   k<-k0/kn #total expected aFC of R hap. to A hap. after accounting for bias
   r_mA<-ifelse(k==Inf,r_mA<-1,r_mA<-(k/(k+1)))
   #ifelse((k0==0 && kn==0),r_mA<-0.5,r_mA<-(k/(k+1))) #this line not returning properly
-
   return(Binom_test_ctm_dbl(eh1,N,r_mR,r_mA,log_BinCoeff,r0)*Prob.dE)
 }
 
@@ -194,7 +192,7 @@ Binom_test_ctm_dbl<-function(X,N,p1,p2,log_BinCoeff,r0){
       Bnp2<-pdf_Binom_fast(N,p2[i],log_BinCoeff)
       Bnp<-(Bnp1+Bnp2)/2
       Bnp  = Bnp/sum(Bnp) #Just to get rid of potential numerical issues
-      tpl<-sum(Bnp[0:X])
+      tpl<-sum(Bnp[1:X])
       tpr<-ifelse(X==N,tpr<-0,tpr<-sum(Bnp[(X+2):(N+1)])) #to properly handly right tail indices
       p.val[i]<-2*min(tpl,tpr)
       p.val[i]<-p.val[i]+Bnp[X+1]
@@ -202,3 +200,6 @@ Binom_test_ctm_dbl<-function(X,N,p1,p2,log_BinCoeff,r0){
   }
   return(p.val)
 }
+
+
+
